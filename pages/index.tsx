@@ -1,5 +1,5 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import type { NextPage, GetServerSideProps } from "next"
+import Head from "next/head"
 
 const Home: NextPage = () => {
   return (
@@ -14,9 +14,7 @@ const Home: NextPage = () => {
         <h1>Crown clothing</h1>
       </main>
 
-      <footer>
-       
-      </footer>
+      <footer></footer>
     </>
   )
 }
