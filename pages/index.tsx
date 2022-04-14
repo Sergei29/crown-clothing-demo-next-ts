@@ -1,5 +1,11 @@
 import type { NextPage } from "next"
 import Head from "next/head"
+import styled from "styled-components"
+
+const StyledH1 = styled.h1`
+  font-family: ${(props) => props.theme.font.heading};
+  color: ${(props) => props.theme.palette.primary.main};
+`
 
 const Home: NextPage = () => {
   return (
@@ -11,7 +17,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-        <h1>Crown clothing</h1>
+        <StyledH1>Crown clothing</StyledH1>
       </main>
 
       <footer></footer>
