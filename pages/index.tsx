@@ -5,8 +5,8 @@ import { connect } from "react-redux"
 import { END } from "redux-saga"
 import styled from "styled-components"
 import { wrapper } from "../src/redux/store"
-import { getPostsStart } from "../src/redux/actions/posts"
-import { RootStateType, PostsState } from "../src/types"
+import { getCollectionsStart } from "../src/redux/actions/collections"
+import { RootStateType, CollectionsState } from "../src/types"
 
 const StyledH1 = styled.h1`
   font-family: ${(props) => props.theme.font.heading};
@@ -42,13 +42,13 @@ const PostItem = styled.div`
 `
 
 type Props = {
-  posts: PostsState
+  collections: CollectionsState
 }
 
-const Home: NextPage<Props> = ({ posts }) => {
+const Home: NextPage<Props> = ({ collections }) => {
   useEffect(() => {
-    console.log("posts :>> ", posts)
-  }, [posts])
+    console.log("collections :>> ", collections)
+  }, [collections])
 
   return (
     <>
@@ -62,10 +62,9 @@ const Home: NextPage<Props> = ({ posts }) => {
         <Container>
           <StyledH1>Crown clothing</StyledH1>
           <PostsList>
-            {posts.collection.map((post) => (
-              <PostItem key={post.id}>
-                <h4>{post.title}</h4>
-                <p>{post.body}</p>
+            {collections.collection.map((col) => (
+              <PostItem key={col.id}>
+                <h4>{col.title}</h4>
               </PostItem>
             ))}
           </PostsList>
@@ -79,14 +78,14 @@ const Home: NextPage<Props> = ({ posts }) => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (ctx) => {
-    await store.dispatch(getPostsStart())
-    const { posts } = store.getState()
+    await store.dispatch(getCollectionsStart())
+    const { collections } = store.getState()
 
     await store.dispatch(END)
     await store.sagaTask.toPromise()
 
     return {
-      props: { posts },
+      props: { collections },
     }
   }
 )

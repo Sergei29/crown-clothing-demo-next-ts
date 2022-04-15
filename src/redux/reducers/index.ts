@@ -1,13 +1,13 @@
 import { combineReducers } from "redux"
-import { postsReducer, INIT_POSTS_STATE } from "./posts"
+import { colllectionsReducer, INIT_COLLECTIONS_STATE } from "./collections"
 import { RootStateType } from "../../types"
 
 export const OBJ_INIT_STATE: RootStateType = {
-  posts: INIT_POSTS_STATE,
+  collections: INIT_COLLECTIONS_STATE,
 }
 
 export const rootReducer = combineReducers<RootStateType>({
-  posts: postsReducer,
+  collections: colllectionsReducer,
 })
 
 export type AppState = ReturnType<typeof rootReducer>
