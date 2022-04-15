@@ -8,9 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "db:push": "npx prisma db push",
+    "db:studio": "npx prisma studio"
   },
   "dependencies": {
+    "@prisma/client": "3.12.0",
     "axios": "^0.26.1",
     "dotenv-load": "^2.0.1",
     "next": "12.1.5",
@@ -38,6 +41,7 @@
     "eslint": "8.13.0",
     "eslint-config-next": "12.1.5",
     "jest": "^27.5.1",
+    "prisma": "^3.12.0",
     "typescript": "4.6.3"
   }
 }
