@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client"
-import { prisma } from "../../prisma/prisma"
 import { CollectionName, CollectionItem, User, ShoppingCart } from "../types"
 
 export const generateCollectionsDataSource = (prisma: PrismaClient) => ({
