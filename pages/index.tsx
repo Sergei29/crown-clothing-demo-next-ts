@@ -10,6 +10,7 @@ import { RootStateType, CollectionsState } from "../src/types"
 import { getDirectoriesAdapter } from "../src/utils"
 import DirectoryItem from "../src/components/DirectoryItem"
 import PageContainer from "../src/containers/PageContainer"
+import { NEXT_PUBLIC_APP_URL } from "../src/constants"
 
 export const HomePageContainer = styled.main`
   display: flex;
@@ -32,6 +33,8 @@ const Home: NextPage<Props> = ({ collections }) => {
   useEffect(() => {
     console.log("collections :>> ", collections)
   }, [collections])
+
+  console.log("NEXT_PUBLIC_APP_URL :>> ", NEXT_PUBLIC_APP_URL)
 
   return (
     <>

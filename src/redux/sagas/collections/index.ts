@@ -17,7 +17,11 @@ function* getCollectionsSaga(): any {
     yield put(getCollectionsSuccess(response.data))
   } catch (error) {
     const message = (error as Error).message || "Failed fetch collections"
-    yield put(getCollectionsError(message))
+    yield put(
+      getCollectionsError(
+        `Failed to fetch URL : ${NEXT_PUBLIC_APP_URL}/api/collections`
+      )
+    )
   }
 }
 
