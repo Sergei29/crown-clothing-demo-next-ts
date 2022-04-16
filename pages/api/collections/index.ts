@@ -1,11 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next"
-import { dataSource } from "../../../src/dataSources"
+import { generateDataSource } from "../../../src/dataSources"
+import { PrismaClient } from "@prisma/client"
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Record<string, any>[]>
 ) {
+  const prisma = new PrismaClient()
+  const dataSource = generateDataSource(prisma)
   try {
     const collections = await dataSource.collections.getCollections()
     res.status(200).json(collections)

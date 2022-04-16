@@ -168,4 +168,4 @@ export const generateDataSource = (prisma: PrismaClient) => ({
   users: generateUsersDataSource(prisma),
 })
 
-export const dataSource = generateDataSource(prisma)
+// export const dataSource = generateDataSource(prisma)
