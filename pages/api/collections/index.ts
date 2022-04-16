@@ -9,7 +9,8 @@ export default async function handler(
 ) {
   try {
     const prisma = new PrismaClient()
-    const collections = await prisma.collection.findMany()
+    const dataSources = generateDataSource(prisma)
+    const collections = await dataSources.collections.getCollections()
     res.status(200).json(collections)
     res.end()
   } catch (error) {

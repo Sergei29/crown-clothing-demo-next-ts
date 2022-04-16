@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import type { NextPage } from "next"
 import Head from "next/head"
 import { connect } from "react-redux"
@@ -29,10 +28,6 @@ type Props = {
 }
 
 const Home: NextPage<Props> = ({ collections }) => {
-  useEffect(() => {
-    console.log("collections :>> ", collections)
-  }, [collections])
-
   return (
     <>
       <Head>
