@@ -8,9 +8,8 @@ export default async function handler(
   res: NextApiResponse<Record<string, any>[]>
 ) {
   const prisma = new PrismaClient()
-  const dataSource = generateDataSource(prisma)
   try {
-    const collections = await dataSource.collections.getCollections()
+    const collections = await prisma.collection.findMany()
     res.status(200).json(collections)
   } catch (error) {
     res
