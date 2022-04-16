@@ -24,6 +24,8 @@ model CollectionItem {
 model Collection {
   id        String           @id @default(auto()) @map("_id") @db.ObjectId
   title     String           @unique
+  imageUrl  String
+  linkUrl   String
   items     CollectionItem[]
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt

@@ -37,7 +37,9 @@ export type CollectionItem = {
 } & Entity
 
 export type Collection = {
-  title: CollectionName
+  title: string
+  imageUrl: string
+  linkUrl: string
   items: CollectionItem[]
 } & Entity
 

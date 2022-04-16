@@ -3,6 +3,7 @@ import { prisma } from "../../prisma/prisma"
 import { CollectionName, CollectionItem, User, ShoppingCart } from "../types"
 
 export const generateCollectionsDataSource = (prisma: PrismaClient) => ({
+  getCollectionsIndex: async () => await prisma.collection.findMany(),
   getCollections: async () => {
     const collections = await prisma.collection.findMany()
     const newCollections = Promise.all(
