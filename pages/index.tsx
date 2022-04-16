@@ -7,38 +7,21 @@ import styled from "styled-components"
 import { wrapper } from "../src/redux/store"
 import { getCollectionsStart } from "../src/redux/actions/collections"
 import { RootStateType, CollectionsState } from "../src/types"
+import { getDirectoriesAdapter } from "../src/utils"
+import DirectoryItem from "../src/components/DirectoryItem"
+import PageContainer from "../src/containers/PageContainer"
 
-const StyledH1 = styled.h1`
-  font-family: ${(props) => props.theme.font.heading};
-  color: ${(props) => props.theme.palette.primary.main};
-  text-align: center;
+export const HomePageContainer = styled.main`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 80px;
 `
-const Container = styled.div`
-  max-width: 90%;
-  margin: 0 auto;
-  height: 100vh;
-`
-const PostsList = styled.div`
+export const DirectoryContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-`
-
-const PostItem = styled.div`
-  background-color: #fff;
-  padding: 16px;
-  width: 250px;
-  border: 1px solid #eaeaea;
-  border-radius: 4px;
-  &:hover {
-    background-color: #eaeaea;
-    transition: all 300ms ease-in-out;
-  }
-  h4 {
-    font-weight: 800;
-    text-align: center;
-  }
+  justify-content: space-between;
 `
 
 type Props = {
@@ -57,21 +40,23 @@ const Home: NextPage<Props> = ({ collections }) => {
         <meta name="description" content="Online commerce" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main>
-        <Container>
-          <StyledH1>Crown clothing</StyledH1>
-          <PostsList>
-            {collections.collection.map((col) => (
-              <PostItem key={col.id}>
-                <h4>{col.title}</h4>
-              </PostItem>
-            ))}
-          </PostsList>
-        </Container>
-      </main>
-
-      <footer></footer>
+      <PageContainer>
+        <HomePageContainer>
+          <DirectoryContainer>
+            {getDirectoriesAdapter(collections.collection).map(
+              ({ id, imageUrl, title, size, linkUrl }) => (
+                <DirectoryItem
+                  key={id}
+                  imageUrl={imageUrl}
+                  title={title}
+                  size={size}
+                  linkUrl={linkUrl}
+                />
+              )
+            )}
+          </DirectoryContainer>
+        </HomePageContainer>
+      </PageContainer>
     </>
   )
 }

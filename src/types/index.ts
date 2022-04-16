@@ -29,6 +29,14 @@ export type Entity = {
   updatedAt: Date
 }
 
+export type Directory = {
+  size: string
+  title: string
+  imageUrl: string
+  linkUrl: string
+  order: number
+} & Entity
+
 export type CollectionItem = {
   imageUrl: string
   name: string
@@ -41,6 +49,12 @@ export type Collection = {
   imageUrl: string
   linkUrl: string
   items: CollectionItem[]
+} & Entity
+
+export type CollectionSummary = {
+  title: string
+  imageUrl: string
+  linkUrl: string
 } & Entity
 
 export type ShoppingCartItem = {
