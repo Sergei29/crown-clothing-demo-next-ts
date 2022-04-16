@@ -7,10 +7,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Record<string, any>[]>
 ) {
-  const prisma = new PrismaClient()
   try {
+    const prisma = new PrismaClient()
     const collections = await prisma.collection.findMany()
     res.status(200).json(collections)
+    res.end()
   } catch (error) {
     res
       .status(500)
