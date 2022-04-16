@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import { prisma } from "../../prisma/prisma"
-import { CollectionName, CollectionItem, User } from "../types"
+import { CollectionName, CollectionItem, User, ShoppingCart } from "../types"
 
 export const generateCollectionsDataSource = (prisma: PrismaClient) => ({
   getCollections: async () => {
@@ -48,14 +48,21 @@ export const generateShoppingCartDataSource = (prisma: PrismaClient) => ({
       },
     })
     if (!!existingCart) {
-      return existingCart
+      const items = await prisma.shoppingCartItem.findMany({
+        where: {
+          cartId: existingCart.id,
+        },
+      })
+      return { ...existingCart, items } as ShoppingCart
     }
 
-    return await prisma.shoppingCart.create({
+    const newCart = await prisma.shoppingCart.create({
       data: {
         userId,
       },
     })
+
+    return { ...newCart, items: [] } as ShoppingCart
   },
 
   getShoppingCarts: async () => await prisma.shoppingCart.findMany(),
