@@ -1,13 +1,12 @@
 import React, { SVGProps } from "react"
 
-const Logo = ({ className, ...rest }: SVGProps<any>) => (
+const Logo = ({ ...rest }: SVGProps<any>) => (
   <svg
     width="50px"
     height="39px"
     viewBox="0 0 50 39"
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"
-    className={className}
     {...rest}
   >
     <title>Group</title>

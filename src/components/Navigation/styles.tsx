@@ -14,6 +14,7 @@ export const LogoStyled = styled.div`
   height: 100%;
   width: 70px;
   padding: 25px;
+  cursor: pointer;
 `
 
 export const LogoContainer = ({
