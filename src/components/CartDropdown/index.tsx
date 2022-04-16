@@ -25,7 +25,15 @@ const CartDropdown = ({ cartItems = [] }: Props) => {
     <CartDropdownContainer>
       <CartItemsContainer>
         {cartItems.length > 0 ? (
-          cartItems.map((item) => <CartItem key={item.id} item={item} />)
+          cartItems.map((item) => (
+            <CartItem
+              key={item.id}
+              imageUrl={item.imageUrl}
+              price={item.price}
+              name={item.name}
+              quantity={item.quantity}
+            />
+          ))
         ) : (
           <EmptyMessageContainer>Your cart is empty</EmptyMessageContainer>
         )}
