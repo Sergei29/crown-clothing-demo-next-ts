@@ -6,13 +6,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Record<string, any>[]>
 ) {
-  const { format } = req.query
-  if (!!format && format.includes("summary")) {
-    const collectionsIndexes =
-      await dataSource.collections.getCollectionsIndex()
-    res.status(200).json(collectionsIndexes)
-    return
+  try {
+    const collections = await dataSource.collections.getCollections()
+    res.status(200).json(collections)
+  } catch (error) {
+    res
+      .status(500)
+      .end((error as Error).message || "Failed to fetch collections")
   }
-  const collections = await dataSource.collections.getCollections()
-  res.status(200).json(collections)
 }
