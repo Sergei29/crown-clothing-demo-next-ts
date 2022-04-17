@@ -17,6 +17,9 @@ const nextConfig = (phase, { defaultConfig }) => {
       // !! WARN !!
       ignoreBuildErrors: true,
     },
+    images: {
+      domains: ["i.imgur.com"],
+    },
     webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
       return config
     },
