@@ -59,10 +59,10 @@ const Home: NextPage<Props> = ({ collections }) => {
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (ctx) => {
     await store.dispatch(getCollectionsStart())
-    const { collections } = store.getState()
 
     await store.dispatch(END)
     await store.sagaTask.toPromise()
+    const { collections } = store.getState()
 
     return {
       props: { collections },
