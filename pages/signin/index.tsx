@@ -3,6 +3,7 @@ import Head from "next/head"
 import { connect } from "react-redux"
 import { RootStateType } from "../../src/types"
 import PageContainer from "../../src/containers/PageContainer"
+import AuthenticationForm from "../../src/components/AuthenticationForm"
 
 const SigninPage: NextPage = () => {
   return (
@@ -12,7 +13,9 @@ const SigninPage: NextPage = () => {
         <meta name="description" content="Online commerce" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <PageContainer>signin page</PageContainer>
+      <PageContainer>
+        <AuthenticationForm />
+      </PageContainer>
     </>
   )
 }

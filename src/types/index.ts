@@ -1,5 +1,6 @@
 import { Task } from "redux-saga"
 import { Store as ReduxStore, AnyAction } from "redux"
+export * from "./reactElementTypes"
 
 export enum CollectionsAction {
   GET_COLLECTIONS_START = "GET_COLLECTIONS_START",
