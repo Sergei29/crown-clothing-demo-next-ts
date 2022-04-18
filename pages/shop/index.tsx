@@ -1,22 +1,24 @@
-import { useEffect } from "react"
 import type { NextPage } from "next"
 import Head from "next/head"
 import { connect } from "react-redux"
 import { END } from "redux-saga"
+import styled from "styled-components"
 import { wrapper } from "../../src/redux/store"
 import { getCollectionsStart } from "../../src/redux/actions/collections"
 import { RootStateType, CollectionsState } from "../../src/types"
 import PageContainer from "../../src/containers/PageContainer"
+import ShopCollectionPreview from "../../src/components/ShopCollectionPreview"
+
+export const CollectionsOverviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`
 
 type Props = {
   collections: CollectionsState
 }
 
 const ShopPage: NextPage<Props> = ({ collections }) => {
-  useEffect(() => {
-    console.log("collections :>> ", collections)
-  }, [collections])
-
   return (
     <>
       <Head>
@@ -24,7 +26,13 @@ const ShopPage: NextPage<Props> = ({ collections }) => {
         <meta name="description" content="Online commerce" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <PageContainer>shop page</PageContainer>
+      <PageContainer>
+        <CollectionsOverviewContainer>
+          {collections.collection.map(({ id, title, items }) => (
+            <ShopCollectionPreview key={id} title={title} items={items} />
+          ))}
+        </CollectionsOverviewContainer>
+      </PageContainer>
     </>
   )
 }

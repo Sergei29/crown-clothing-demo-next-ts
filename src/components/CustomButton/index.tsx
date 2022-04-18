@@ -1,15 +1,26 @@
-import React from "react"
+import React, { ButtonHTMLAttributes } from "react"
 import { CustomButtonContainer } from "./styles"
 
 type Props = {
-  isGoogleSignIn: boolean
-  inverted: boolean
+  isGoogleSignIn?: boolean
+  inverted?: boolean
   children: React.ReactNode
-}
+} & ButtonHTMLAttributes<any>
 
-const CustomButton = (props: Props) => {
+const CustomButton = ({
+  children,
+  inverted = false,
+  isGoogleSignIn = false,
+  ...restButtonProps
+}: Props) => {
   return (
-    <CustomButtonContainer {...props}>{props.children}</CustomButtonContainer>
+    <CustomButtonContainer
+      inverted={inverted}
+      isGoogleSignIn={isGoogleSignIn}
+      {...restButtonProps}
+    >
+      {children}
+    </CustomButtonContainer>
   )
 }
 
