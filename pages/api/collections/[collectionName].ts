@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next"
 import { generateDataSource } from "../../../src/dataSources"
-import { PrismaClientSingle } from "../../../prisma/prisma"
+import { PrismaClientSingleton } from "../../../prisma/prisma"
 import { CollectionName } from "../../../src/types"
 
 const NAMES = ["mens", "hats", "jackets", "sneakers", "hats", "womens"]
@@ -11,7 +11,7 @@ export default async function handler(
   res: NextApiResponse<Record<string, any>>
 ) {
   const { collectionName } = req.query
-  const prisma = PrismaClientSingle.getInstance()
+  const prisma = PrismaClientSingleton.getInstance()
   const dataSource = generateDataSource(prisma)
   if (
     Array.isArray(collectionName) ||
