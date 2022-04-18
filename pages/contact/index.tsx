@@ -1,8 +1,7 @@
 import type { NextPage } from "next"
 import Head from "next/head"
-import { connect } from "react-redux"
-import { RootStateType } from "../../src/types"
 import PageContainer from "../../src/containers/PageContainer"
+import NoDataPlaceholder from "../../src/components/NoDataPlaceholder"
 
 const ContactPage: NextPage = () => {
   return (
@@ -12,9 +11,11 @@ const ContactPage: NextPage = () => {
         <meta name="description" content="Online commerce" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <PageContainer>contact page</PageContainer>
+      <PageContainer>
+        <NoDataPlaceholder customMessage="Sorry, this page is under construction" />
+      </PageContainer>
     </>
   )
 }
 
-export default connect((state: RootStateType) => state)(ContactPage)
+export default ContactPage
