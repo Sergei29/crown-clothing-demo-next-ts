@@ -13,6 +13,7 @@
     "db:studio": "npx prisma studio"
   },
   "dependencies": {
+    "@next-auth/prisma-adapter": "^1.0.3",
     "@prisma/client": "^3.12.0",
     "axios": "^0.26.1",
     "dotenv-load": "^2.0.1",

@@ -3,18 +3,23 @@ import SignInForm from "./components/SignInForm"
 import SignUpForm from "./components/SignUpForm"
 import { SignInAndSignUpContainer } from "./styles"
 
-type SignUpData = { email: string; password: string; displayName: string }
-const AuthenticationForm = () => {
-  const googleSignInStart = () => {
-    // auth login with google
-  }
-  const emailSignInStart = (email: string, password: string) => {
-    // auth login with email and pw
-  }
-  const signUpStart = ({ email, password, displayName }: SignUpData) => {
-    // signup with credentials
-  }
+export type SignUpData = {
+  email: string
+  password: string
+  displayName: string
+}
 
+type Props = {
+  googleSignInStart: () => void
+  emailSignInStart: (email: string, password: string) => void
+  signUpStart: ({ email, password, displayName }: SignUpData) => void
+}
+
+const AuthenticationForm = ({
+  emailSignInStart,
+  googleSignInStart,
+  signUpStart,
+}: Props) => {
   return (
     <SignInAndSignUpContainer>
       <SignInForm
