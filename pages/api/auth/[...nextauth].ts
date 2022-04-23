@@ -9,14 +9,30 @@ import {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   JWT_SECRET,
+  SECRET,
 } from "../../../src/constants"
 
 const prisma = PrismaClientSingleton.getInstance()
 const dataSource = generateDataSource(prisma)
+const getUserOrCreateNew = async (name: string, email: string) => {
+  let userFound: Record<string, any> | null = null
+  userFound = await dataSource.users.getUserByEmail(email)
+
+  if (!userFound) {
+    userFound = await dataSource.users.addNewUser({ name, email })
+  }
+  return userFound
+}
 
 const options: NextAuthOptions = {
+  secret: SECRET,
   jwt: {
     secret: JWT_SECRET,
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 60, // 30 minutes
+    updateAge: 24 * 60 * 60, // 24 hours
   },
   providers: [
     GoogleProvider({
@@ -67,43 +83,43 @@ const options: NextAuthOptions = {
   ],
   pages: {
     signIn: "/signin",
+    signOut: "/",
+    error: "/404",
   },
-
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("cb/signIn: ", {
-        user,
-        account,
-        profile,
-        email,
-        credentials,
-      })
       return true
     },
     async redirect({ url, baseUrl }) {
       return baseUrl
     },
-    async session({ session, token, user }) {
-      console.log("cb/session: ", { session, token, user })
-
-      // add user to db ( if new user )
-      if (!!session.user && session.user.email) {
-        const userFound = await dataSource.users.getUserByEmail(
-          session.user.email
-        )
-
-        if (!userFound) {
-          const name = session.user.name || "Guest"
-          const email = session.user?.email
-          await dataSource.users.addNewUser({ name, email })
-        }
+    async jwt({ token }) {
+      // get user / add user to db ( if new user )
+      let userFound: Record<string, any> | null = null
+      if (!!token.name && !!token.email) {
+        userFound = await getUserOrCreateNew(token.name, token.email)
       }
 
-      return session
+      const newToken = { ...token, sub: userFound?.id || token.sub }
+      return newToken
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
-      console.log("cb/jwt: ", { token, user, account, profile, isNewUser })
-      return token
+
+    async session({ session, token, user }) {
+      let userFound: Record<string, any> | null = null
+
+      // get user / add user to db ( if new user )
+      if (!!session.user && session.user.email) {
+        userFound = await getUserOrCreateNew(
+          session.user.name || "Guest",
+          session.user.email
+        )
+      }
+      const newSession = {
+        ...session,
+        user: { ...session.user, id: userFound?.id || null },
+      }
+
+      return newSession
     },
   },
 }
