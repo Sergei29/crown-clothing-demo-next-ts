@@ -1,5 +1,11 @@
 import { PrismaClient } from "@prisma/client"
-import { CollectionName, CollectionItem, User, ShoppingCart } from "../types"
+import {
+  CollectionName,
+  CollectionItem,
+  User,
+  UserInput,
+  ShoppingCart,
+} from "../types"
 
 export const generateCollectionsDataSource = (prisma: PrismaClient) => ({
   getCollectionsIndex: async () => await prisma.collection.findMany(),
@@ -155,7 +161,7 @@ export const generateUsersDataSource = (prisma: PrismaClient) => ({
   async deleteUserById(id: string) {
     return await prisma.user.delete({ where: { id } })
   },
-  async addNewUser(userInput: User) {
+  async addNewUser(userInput: UserInput) {
     return await prisma.user.create({ data: { ...userInput } })
   },
 })

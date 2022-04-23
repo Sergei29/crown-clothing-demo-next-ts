@@ -1,18 +1,18 @@
-import { Fragment } from "react"
 import type { AppProps } from "next/app"
+import { SessionProvider } from "next-auth/react"
 import { wrapper } from "../src/redux/store"
 import GlobalStyle from "../src/styles/GlobalStyle"
 import { ThemeProvider } from "styled-components"
 import { theme } from "../src/theme"
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps: { session, ...props } }: AppProps) => {
   return (
-    <Fragment>
+    <SessionProvider session={session}>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
+        <Component {...props} />
       </ThemeProvider>
-    </Fragment>
+    </SessionProvider>
   )
 }
 

@@ -1,6 +1,5 @@
 import { AnyAction } from "redux"
-import { HYDRATE } from "next-redux-wrapper"
-import { CollectionsState, CollectionsAction } from "../../types"
+import { CollectionsState, CollectionsAction } from "../../../types"
 
 export const INIT_COLLECTIONS_STATE: CollectionsState = {
   loading: false,
@@ -13,13 +12,6 @@ export const colllectionsReducer = (
   action: AnyAction
 ): CollectionsState => {
   switch (action.type) {
-    /**
-     * @description This will overwrite client state
-     */
-    case HYDRATE: {
-      return { ...action.payload.collections }
-    }
-
     case CollectionsAction.GET_COLLECTIONS_START:
       return { ...state, loading: true, error: null }
 

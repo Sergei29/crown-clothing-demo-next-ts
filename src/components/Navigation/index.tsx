@@ -1,4 +1,5 @@
 import React from "react"
+import { useSession, signOut } from "next-auth/react"
 import Logo from "../Icons/Logo"
 import CartIcon from "../CartIcon"
 import CartDropdown from "../CartDropdown"
@@ -11,11 +12,12 @@ import {
 } from "./styles"
 
 const Navigation = () => {
-  const currentUser = null // get current user from auth
+  const { data: session } = useSession()
   const hidden = true // get global state for shopping card show/hidden status
 
   const signOutStart = () => {
     // proceed href signOut
+    signOut()
   }
 
   return (
@@ -29,7 +31,7 @@ const Navigation = () => {
 
         <OptionLink href="/contact">CONTACT</OptionLink>
 
-        {currentUser ? (
+        {session ? (
           <OptionStyled onClick={signOutStart}>SIGN OUT</OptionStyled>
         ) : (
           <OptionLink href="/signin">SIGN IN</OptionLink>

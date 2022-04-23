@@ -5,13 +5,23 @@ import { PrismaClientSingleton } from "../../../prisma/prisma"
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Record<string, any>[]>
+  res: NextApiResponse<Record<string, any>>
 ) {
+  if (req.method !== "POST") {
+    res.status(404).end("Use POST method. Data payload: {name, email}")
+  }
   try {
+    const { name, email } = req.body
     const prisma = PrismaClientSingleton.getInstance()
     const dataSources = generateDataSource(prisma)
-    const collections = await dataSources.collections.getCollections()
-    res.status(200).json(collections)
+    let userFound = await dataSources.users.getUserByEmail(email as string)
+    if (!userFound) {
+      userFound = await dataSources.users.addNewUser({ name, email })
+    }
+
+    res
+      .status(200)
+      .json({ id: userFound.id, name: userFound.name, email: userFound.email })
     res.end()
   } catch (error) {
     res

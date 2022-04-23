@@ -1,30 +1,42 @@
-import { createStore, applyMiddleware, Middleware } from "redux"
-import { createWrapper } from "next-redux-wrapper"
+import {
+  createStore,
+  applyMiddleware,
+  Middleware,
+  AnyAction,
+  Reducer,
+} from "redux"
+import { createWrapper, HYDRATE } from "next-redux-wrapper"
 import { composeWithDevTools } from "redux-devtools-extension"
-import createSagaMiddleware from "redux-saga"
-import rootSaga from "../sagas"
+import thunkMiddleware from "redux-thunk"
 import { rootReducer } from "../reducers"
-import { ReduxStoreType } from "../../types"
+import { RootStateType } from "../../types"
 
-const bIsDevelopment = process.env.NODE_ENV === "development"
+const bindMiddlware = (middleware: Middleware<any, any, any>[]) => {
+  if (process.env.NODE_ENV !== "production") {
+    return composeWithDevTools(applyMiddleware(...middleware))
+  }
 
-export const makeStore = () => {
-  const sagaMiddleware = createSagaMiddleware()
-
-  const arrMiddlewares: Middleware<any, any, any>[] = [sagaMiddleware]
-
-  const compoundMiddlewares = bIsDevelopment
-    ? composeWithDevTools(applyMiddleware(...arrMiddlewares))
-    : applyMiddleware(...arrMiddlewares)
-
-  // 2: Add an extra parameter for applying middleware
-  const store = createStore(rootReducer, compoundMiddlewares)
-
-  // 3: Run your sagas on server
-  ;(store as ReduxStoreType).sagaTask = sagaMiddleware.run(rootSaga)
-
-  // 4: now return the store
-  return store as ReduxStoreType
+  return applyMiddleware(...middleware)
 }
 
-export const wrapper = createWrapper(makeStore)
+const reducer: Reducer<RootStateType, AnyAction> = (state, action) => {
+  if (action.type === HYDRATE) {
+    const nextState = {
+      ...state,
+      ...action.payload,
+    }
+    return nextState
+  } else {
+    return rootReducer(state, action)
+  }
+}
+
+const initStore = () => {
+  return createStore(reducer, bindMiddlware([thunkMiddleware]))
+}
+
+export const wrapper = createWrapper(initStore, {
+  debug: process.env.NODE_ENV !== "production",
+  serializeState: (state) => JSON.stringify(state),
+  deserializeState: (state) => JSON.parse(state),
+})

@@ -1,7 +1,5 @@
 import type { NextPage } from "next"
 import Head from "next/head"
-import { connect } from "react-redux"
-import { RootStateType } from "../../src/types"
 import PageContainer from "../../src/containers/PageContainer"
 
 const CheckoutPage: NextPage = () => {
@@ -17,4 +15,4 @@ const CheckoutPage: NextPage = () => {
   )
 }
 
-export default connect((state: RootStateType) => state)(CheckoutPage)
+export default CheckoutPage
