@@ -58,7 +58,7 @@ const SigninPage: NextPage<Props> = ({ providers }) => {
         <AuthenticationForm
           emailSignInStart={emailSignInStart}
           googleSignInStart={googleSignInStart}
-          signUpStart={currentUser ? null : signUpStart}
+          signUpStart={signUpStart}
         />
       </PageContainer>
     </>

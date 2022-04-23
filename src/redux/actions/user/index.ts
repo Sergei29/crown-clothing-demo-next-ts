@@ -6,7 +6,7 @@ import {
   ThunkActionCreator,
   SignUpCredentials,
 } from "../../../types"
-import { NEXT_PUBLIC_APP_URL } from "../../../constants"
+import { NEXT_PUBLIC_APP_URL, ERRORS } from "../../../constants"
 
 export const signInStart = () => ({
   type: UserAction.SIGN_IN_START,
@@ -59,7 +59,7 @@ export const registerUser =
     const { name, email, password } = newCredentials
     dispatch(signUpStart())
     try {
-      const { data } = await axios.post<UserDisplay>(
+      const { data, status } = await axios.post<UserDisplay>(
         `${NEXT_PUBLIC_APP_URL}/api/auth/register`,
         {
           name,
@@ -67,6 +67,10 @@ export const registerUser =
           password,
         }
       )
+
+      if (status === 204) {
+        throw new Error(ERRORS.SIGNUP_USER_EXISTS)
+      }
 
       dispatch(
         signUpSuccess({ id: data.id, name: data.name, email: data.email })

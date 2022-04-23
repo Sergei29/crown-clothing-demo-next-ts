@@ -12,7 +12,7 @@ export type SignUpData = {
 type Props = {
   googleSignInStart: () => void
   emailSignInStart: (email: string, password: string) => void
-  signUpStart: (({ email, password, name }: SignUpData) => void) | null
+  signUpStart: ({ email, password, name }: SignUpData) => void
 }
 
 const AuthenticationForm = ({
@@ -26,7 +26,7 @@ const AuthenticationForm = ({
         emailSignInStart={emailSignInStart}
         googleSignInStart={googleSignInStart}
       />
-      {signUpStart && <SignUpForm signUpStart={signUpStart} />}
+      <SignUpForm signUpStart={signUpStart} />
     </SignInAndSignUpContainer>
   )
 }
