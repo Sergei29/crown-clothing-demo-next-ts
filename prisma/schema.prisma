@@ -15,6 +15,7 @@ model CollectionItem {
   imageUrl     String
   name         String
   price        Int
+  quantity     Int
   collection   Collection @relation(fields: [collectionId], references: [id])
   collectionId String     @db.ObjectId
   createdAt    DateTime   @default(now())
