@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import type { NextPage } from "next"
 import Head from "next/head"
 import { useSelector } from "react-redux"
@@ -6,6 +6,7 @@ import { getSession } from "next-auth/react"
 import styled from "styled-components"
 import { wrapper } from "../src/redux/store"
 import { getCollections } from "../src/redux/actions/collections"
+import { signInSuccess } from "../src/redux/actions/user"
 import { RootStateType, CollectionsState, Store } from "../src/types"
 import { getDirectoriesAdapter } from "../src/utils"
 import DirectoryItem from "../src/components/DirectoryItem"
@@ -61,7 +62,15 @@ const Home: NextPage = () => {
 export const getServerSideProps = wrapper.getServerSideProps(
   (store: Store) => async (ctx) => {
     const session = await getSession(ctx)
-    console.log("Home/getServerSideProps/session :>> ", session)
+    const {
+      id = null,
+      email,
+      name,
+    } = (session?.user as Record<string, any>) || {}
+    if (!!id && !!email && !!name) {
+      await store.dispatch(signInSuccess({ id, name, email }))
+    }
+
     await store.dispatch(getCollections())
     return {
       props: { initialReduxState: store.getState() },

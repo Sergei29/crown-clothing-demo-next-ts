@@ -1,9 +1,10 @@
 import type { NextPage } from "next"
 import Head from "next/head"
-import { connect } from "react-redux"
+import { getSession } from "next-auth/react"
 import { wrapper } from "../../src/redux/store"
-import { RootStateType, Collection, Store } from "../../src/types"
+import { Collection, Store } from "../../src/types"
 import { getCollections } from "../../src/redux/actions/collections"
+import { signInSuccess } from "../../src/redux/actions/user"
 import PageContainer from "../../src/containers/PageContainer"
 import ShopCollectionDetails from "../../src/components/ShopCollectionDetails"
 
@@ -11,7 +12,7 @@ type Props = {
   collection: Collection
 }
 
-const ShopPage: NextPage<Props> = ({ collection }) => {
+const ShopCategoryPage: NextPage<Props> = ({ collection }) => {
   return (
     <>
       <Head>
@@ -42,6 +43,15 @@ export const getServerSideProps = wrapper.getServerSideProps(
         notFound: true,
       }
     }
+    const session = await getSession(ctx)
+    const {
+      id = null,
+      email,
+      name,
+    } = (session?.user as Record<string, any>) || {}
+    if (!!id && !!email && !!name) {
+      await store.dispatch(signInSuccess({ id, name, email }))
+    }
 
     await store.dispatch(getCollections())
     const state = store.getState()
@@ -62,4 +72,4 @@ export const getServerSideProps = wrapper.getServerSideProps(
   }
 )
 
-export default connect((state: RootStateType) => state)(ShopPage)
+export default ShopCategoryPage

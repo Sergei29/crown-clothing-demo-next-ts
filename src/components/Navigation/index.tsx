@@ -22,19 +22,25 @@ const Navigation = () => {
 
   return (
     <NavContainer>
-      <LogoContainer href="/">
+      <LogoContainer href="/" as={`/`}>
         <Logo className="logo" />
       </LogoContainer>
 
       <OptionsContainer>
-        <OptionLink href="/shop">SHOP</OptionLink>
+        <OptionLink href="/shop" as={`/shop`}>
+          SHOP
+        </OptionLink>
 
-        <OptionLink href="/contact">CONTACT</OptionLink>
+        <OptionLink href="/contact" as={`/contact`}>
+          CONTACT
+        </OptionLink>
 
         {session ? (
           <OptionStyled onClick={signOutStart}>SIGN OUT</OptionStyled>
         ) : (
-          <OptionLink href="/signin">SIGN IN</OptionLink>
+          <OptionLink href="/signin" as={`/signin`}>
+            SIGN IN
+          </OptionLink>
         )}
 
         <CartIcon />
