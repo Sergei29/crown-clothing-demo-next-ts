@@ -1,18 +1,21 @@
 import { useEffect } from "react"
-import type { NextPage, GetServerSideProps } from "next"
+import type { NextPage } from "next"
 import Head from "next/head"
-import { connect } from "react-redux"
+import { connect, useDispatch, useSelector } from "react-redux"
 import {
   signIn,
   getSession,
   getProviders,
-  getCsrfToken,
   LiteralUnion,
   ClientSafeProvider,
 } from "next-auth/react"
 import { BuiltInProviderType } from "next-auth/providers"
-import { Session } from "next-auth"
-import { RootStateType } from "../../src/types"
+import { wrapper } from "../../src/redux/store"
+import {
+  signInSuccess,
+  signUpStart as actionSignUpStart,
+} from "../../src/redux/actions/user"
+import { RootStateType, UserState, Store } from "../../src/types"
 import PageContainer from "../../src/containers/PageContainer"
 import AuthenticationForm, {
   SignUpData,
@@ -23,31 +26,26 @@ type Props = {
     LiteralUnion<BuiltInProviderType, string>,
     ClientSafeProvider
   > | null
-  session: Session | null
-  csrfToken?: string
 }
-const SigninPage: NextPage<Props> = ({ providers, session, csrfToken }) => {
+
+const SigninPage: NextPage<Props> = ({ providers }) => {
+  const { currentUser } = useSelector<RootStateType, UserState>(
+    (state) => state.user
+  )
+
   const googleSignInStart = async () => {
-    // auth login with google
     if (!providers?.google) return
     await signIn(providers.google.id)
   }
   const emailSignInStart = async (email: string, password: string) => {
-    // auth login with email and pw
     if (!providers?.credentials) return
     await signIn("credentials", { email, password })
   }
-  const signUpStart = ({ email, password, displayName }: SignUpData) => {
-    // signup with credentials
-  }
+  const signUpStart = ({ email, password, displayName }: SignUpData) => {}
 
   useEffect(() => {
-    console.log("session :>> ", session)
-  }, [session])
-
-  useEffect(() => {
-    console.log("csrfToken :>> ", csrfToken)
-  }, [csrfToken])
+    console.log("currentUser :", currentUser)
+  }, [currentUser])
 
   return (
     <>
@@ -67,13 +65,24 @@ const SigninPage: NextPage<Props> = ({ providers, session, csrfToken }) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const providers = await getProviders()
-  const session = await getSession(ctx)
-  const csrfToken = await getCsrfToken(ctx)
-  return {
-    props: { providers, session, csrfToken },
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store: Store) => async (ctx) => {
+    const providers = await getProviders()
+    const session = await getSession({ req: ctx.req })
+
+    if (session) {
+      return {
+        redirect: {
+          destination: "/", // Redirect to the home page
+          permanent: false,
+        },
+      }
+    }
+
+    return {
+      props: { providers, initialReduxState: store.getState() },
+    }
   }
-}
+)
 
 export default connect((state: RootStateType) => state)(SigninPage)

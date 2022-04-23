@@ -1,10 +1,9 @@
 import type { NextPage } from "next"
 import Head from "next/head"
 import { connect } from "react-redux"
-import { END } from "redux-saga"
 import { wrapper } from "../../src/redux/store"
-import { getCollectionsStart } from "../../src/redux/actions/collections"
-import { RootStateType, Collection } from "../../src/types"
+import { RootStateType, Collection, Store } from "../../src/types"
+import { getCollections } from "../../src/redux/actions/collections"
 import PageContainer from "../../src/containers/PageContainer"
 import ShopCollectionDetails from "../../src/components/ShopCollectionDetails"
 
@@ -31,7 +30,7 @@ const ShopPage: NextPage<Props> = ({ collection }) => {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-  (store) => async (ctx) => {
+  (store: Store) => async (ctx) => {
     let collection: Collection | null = null
 
     const {
@@ -44,10 +43,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       }
     }
 
-    await store.dispatch(getCollectionsStart())
-    await store.dispatch(END)
-    await store.sagaTask.toPromise()
-
+    await store.dispatch(getCollections())
     const state = store.getState()
 
     collection =
@@ -61,7 +57,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     }
 
     return {
-      props: { collection },
+      props: { collection, initialReduxState: state },
     }
   }
 )

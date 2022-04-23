@@ -1,11 +1,12 @@
+import React, { useEffect } from "react"
 import type { NextPage } from "next"
 import Head from "next/head"
-import { connect } from "react-redux"
-import { END } from "redux-saga"
+import { useSelector } from "react-redux"
+import { getSession } from "next-auth/react"
 import styled from "styled-components"
 import { wrapper } from "../src/redux/store"
-import { getCollectionsStart } from "../src/redux/actions/collections"
-import { RootStateType, CollectionsState } from "../src/types"
+import { getCollections } from "../src/redux/actions/collections"
+import { RootStateType, CollectionsState, Store } from "../src/types"
 import { getDirectoriesAdapter } from "../src/utils"
 import DirectoryItem from "../src/components/DirectoryItem"
 import PageContainer from "../src/containers/PageContainer"
@@ -23,11 +24,11 @@ export const DirectoryContainer = styled.div`
   justify-content: space-between;
 `
 
-type Props = {
-  collections: CollectionsState
-}
+const Home: NextPage = () => {
+  const { collection } = useSelector<RootStateType, CollectionsState>(
+    (state) => state.collections
+  )
 
-const Home: NextPage<Props> = ({ collections }) => {
   return (
     <>
       <Head>
@@ -38,17 +39,18 @@ const Home: NextPage<Props> = ({ collections }) => {
       <PageContainer>
         <HomePageContainer>
           <DirectoryContainer>
-            {getDirectoriesAdapter(collections.collection).map(
-              ({ id, imageUrl, title, size, linkUrl }) => (
-                <DirectoryItem
-                  key={id}
-                  imageUrl={imageUrl}
-                  title={title}
-                  size={size}
-                  linkUrl={linkUrl}
-                />
-              )
-            )}
+            {!!collection &&
+              getDirectoriesAdapter(collection).map(
+                ({ id, imageUrl, title, size, linkUrl }) => (
+                  <DirectoryItem
+                    key={id}
+                    imageUrl={imageUrl}
+                    title={title}
+                    size={size}
+                    linkUrl={linkUrl}
+                  />
+                )
+              )}
           </DirectoryContainer>
         </HomePageContainer>
       </PageContainer>
@@ -57,17 +59,14 @@ const Home: NextPage<Props> = ({ collections }) => {
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
-  (store) => async (ctx) => {
-    await store.dispatch(getCollectionsStart())
-
-    await store.dispatch(END)
-    await store.sagaTask.toPromise()
-    const { collections } = store.getState()
-
+  (store: Store) => async (ctx) => {
+    const session = await getSession(ctx)
+    console.log("Home/getServerSideProps/session :>> ", session)
+    await store.dispatch(getCollections())
     return {
-      props: { collections },
+      props: { initialReduxState: store.getState() },
     }
   }
 )
 
-export default connect((state: RootStateType) => state)(Home)
+export default Home

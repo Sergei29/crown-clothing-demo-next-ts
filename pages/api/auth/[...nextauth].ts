@@ -2,7 +2,7 @@ import { NextApiHandler } from "next"
 import NextAuth, { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import bcrypt from "bcrypt"
 import { PrismaClientSingleton } from "../../../prisma/prisma"
 import { generateDataSource } from "../../../src/dataSources"
 import {
@@ -35,15 +35,33 @@ const options: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid.
         if (!credentials) return null
-        const user = await dataSource.users.getUserByEmail(credentials.email)
-        if (!!user && user.password === credentials.password) {
-          return user
+
+        try {
+          const user = await dataSource.users.getUserByEmail(credentials.email)
+
+          if (!user || !user.password) {
+            throw new Error(
+              "User not registered to login with credentials email/password. Try other sign in method ( Google, etc. )"
+            )
+          }
+
+          const isMatch = await bcrypt.compare(
+            credentials.password,
+            user.password
+          )
+
+          if (isMatch) {
+            return user
+          } else {
+            throw new Error("Wrong credentials")
+          }
+        } catch (error) {
+          const errorMessage =
+            (error as Error).message ||
+            `Failed to authorize user ${credentials.email}`
+          throw new Error(errorMessage)
         }
-        return null
       },
     }),
   ],
@@ -53,22 +71,38 @@ const options: NextAuthOptions = {
 
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("cb/signIn/user", user)
+      console.log("cb/signIn: ", {
+        user,
+        account,
+        profile,
+        email,
+        credentials,
+      })
       return true
     },
     async redirect({ url, baseUrl }) {
       return baseUrl
     },
     async session({ session, token, user }) {
-      console.log("cb/session/user: ", user)
-      console.log("cb/session/session: ", session)
+      console.log("cb/session: ", { session, token, user })
 
       // add user to db ( if new user )
+      if (!!session.user && session.user.email) {
+        const userFound = await dataSource.users.getUserByEmail(
+          session.user.email
+        )
+
+        if (!userFound) {
+          const name = session.user.name || "Guest"
+          const email = session.user?.email
+          await dataSource.users.addNewUser({ name, email })
+        }
+      }
 
       return session
     },
     async jwt({ token, user, account, profile, isNewUser }) {
-      console.log("cb/jwt/user: ", user)
+      console.log("cb/jwt: ", { token, user, account, profile, isNewUser })
       return token
     },
   },
