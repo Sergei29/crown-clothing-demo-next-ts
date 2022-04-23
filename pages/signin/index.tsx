@@ -11,10 +11,7 @@ import {
 } from "next-auth/react"
 import { BuiltInProviderType } from "next-auth/providers"
 import { wrapper } from "../../src/redux/store"
-import {
-  signInSuccess,
-  signUpStart as actionSignUpStart,
-} from "../../src/redux/actions/user"
+import { registerUser } from "../../src/redux/actions/user"
 import { RootStateType, UserState, Store } from "../../src/types"
 import PageContainer from "../../src/containers/PageContainer"
 import AuthenticationForm, {
@@ -32,6 +29,7 @@ const SigninPage: NextPage<Props> = ({ providers }) => {
   const { currentUser } = useSelector<RootStateType, UserState>(
     (state) => state.user
   )
+  const dispatch = useDispatch()
 
   const googleSignInStart = async () => {
     if (!providers?.google) return
@@ -41,7 +39,9 @@ const SigninPage: NextPage<Props> = ({ providers }) => {
     if (!providers?.credentials) return
     await signIn("credentials", { email, password })
   }
-  const signUpStart = ({ email, password, displayName }: SignUpData) => {}
+  const signUpStart = ({ email, password, name }: SignUpData) => {
+    dispatch(registerUser({ email, password, name }))
+  }
 
   useEffect(() => {
     console.log("currentUser :", currentUser)
@@ -58,7 +58,7 @@ const SigninPage: NextPage<Props> = ({ providers }) => {
         <AuthenticationForm
           emailSignInStart={emailSignInStart}
           googleSignInStart={googleSignInStart}
-          signUpStart={signUpStart}
+          signUpStart={currentUser ? null : signUpStart}
         />
       </PageContainer>
     </>
@@ -68,7 +68,8 @@ const SigninPage: NextPage<Props> = ({ providers }) => {
 export const getServerSideProps = wrapper.getServerSideProps(
   (store: Store) => async (ctx) => {
     const providers = await getProviders()
-    const session = await getSession({ req: ctx.req })
+    const session = await getSession(ctx)
+    console.log("signin/getServerSideProps/session :>> ", session)
 
     if (session) {
       return {

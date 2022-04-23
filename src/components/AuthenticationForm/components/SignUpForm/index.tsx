@@ -7,13 +7,13 @@ type Props = { signUpStart: (...args: any[]) => void }
 
 const SignUpForm = ({ signUpStart }: Props): JSX.Element => {
   const [userCredentials, setUserCredentials] = useState({
-    displayName: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
   })
 
-  const { displayName, email, password, confirmPassword } = userCredentials
+  const { name, email, password, confirmPassword } = userCredentials
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -22,7 +22,7 @@ const SignUpForm = ({ signUpStart }: Props): JSX.Element => {
       return
     }
 
-    signUpStart({ email, password, displayName })
+    signUpStart({ email, password, name })
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,8 +37,8 @@ const SignUpForm = ({ signUpStart }: Props): JSX.Element => {
       <form onSubmit={handleSubmit} className="sign-up-form">
         <FormInput
           type="text"
-          name="displayName"
-          value={displayName}
+          name="name"
+          value={name}
           required
           handleChange={handleChange}
           label="Display Name"

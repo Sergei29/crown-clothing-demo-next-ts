@@ -60,14 +60,17 @@ export const registerUser =
     dispatch(signUpStart())
     try {
       const { data } = await axios.post<UserDisplay>(
-        `${NEXT_PUBLIC_APP_URL}/api/register`,
+        `${NEXT_PUBLIC_APP_URL}/api/auth/register`,
         {
           name,
           email,
           password,
         }
       )
-      dispatch(signUpSuccess(data))
+
+      dispatch(
+        signUpSuccess({ id: data.id, name: data.name, email: data.email })
+      )
     } catch (error) {
       const message =
         (error as Error).message || `Failed to register user ${name}`

@@ -6,13 +6,13 @@ import { SignInAndSignUpContainer } from "./styles"
 export type SignUpData = {
   email: string
   password: string
-  displayName: string
+  name: string
 }
 
 type Props = {
   googleSignInStart: () => void
   emailSignInStart: (email: string, password: string) => void
-  signUpStart: ({ email, password, displayName }: SignUpData) => void
+  signUpStart: (({ email, password, name }: SignUpData) => void) | null
 }
 
 const AuthenticationForm = ({
@@ -26,7 +26,7 @@ const AuthenticationForm = ({
         emailSignInStart={emailSignInStart}
         googleSignInStart={googleSignInStart}
       />
-      <SignUpForm signUpStart={signUpStart} />
+      {signUpStart && <SignUpForm signUpStart={signUpStart} />}
     </SignInAndSignUpContainer>
   )
 }
