@@ -53,6 +53,7 @@ export const generateShoppingCartDataSource = (prisma: PrismaClient) => ({
         userId,
       },
     })
+    // IF EXISTING:
     if (!!existingCart) {
       const items = await prisma.shoppingCartItem.findMany({
         where: {
@@ -62,6 +63,7 @@ export const generateShoppingCartDataSource = (prisma: PrismaClient) => ({
       return { ...existingCart, items } as ShoppingCart
     }
 
+    // IF NEW:
     const newCart = await prisma.shoppingCart.create({
       data: {
         userId,

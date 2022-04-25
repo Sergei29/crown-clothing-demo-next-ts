@@ -22,7 +22,7 @@ export const convertToCartItem = (
 
 /**
  * @description add shop collection item to a cart
- * @param {object} item collection item
+ * @param {object} item collection item to add
  * @param {object} cart user shopping cart
  * @returns {object} updated shopping cart with added item
  */
