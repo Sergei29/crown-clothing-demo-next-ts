@@ -47,6 +47,7 @@ export type CollectionItem = {
   imageUrl: string
   name: string
   price: number
+  quantity: number
   collectionId: string
 } & Entity
 

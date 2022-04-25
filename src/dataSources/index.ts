@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, ShoppingCartItem } from "@prisma/client"
 import {
   CollectionName,
   CollectionItem,
@@ -146,8 +146,50 @@ export const generateShoppingCartDataSource = (prisma: PrismaClient) => ({
         id: cartId,
       },
     })
+    await prisma.shoppingCartItem.deleteMany({
+      where: {
+        cartId,
+      },
+    })
 
     return cartDeleted.id
+  },
+
+  // create many shopping cart items - rewrite the existing cart items to the new ones
+  createManyCartItems: async (
+    cartItems: ShoppingCartItem[],
+    cartId: string
+  ) => {
+    await prisma.shoppingCartItem.deleteMany({
+      where: {
+        cartId,
+      },
+    })
+    const itemsInputData = cartItems.map((item) => {
+      const { id, createdAt, updatedAt, ...restCartItem } = item
+      return restCartItem
+    })
+
+    const newCartItems = await Promise.all(
+      itemsInputData.map((inputData) =>
+        prisma.shoppingCartItem.create({
+          data: inputData,
+        })
+      )
+    )
+
+    return newCartItems
+  },
+
+  // update shopping cart (eg. on user logout to save for next time)
+  async updateShoppingCart(cart: ShoppingCart) {
+    const newCartItems = await this.createManyCartItems(cart.items, cart.id)
+    const newCart = { ...cart, items: newCartItems }
+
+    return await prisma.shoppingCart.update({
+      where: { id: cart.id },
+      data: { ...newCart },
+    })
   },
 })
 
